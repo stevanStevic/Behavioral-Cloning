@@ -1,11 +1,5 @@
 # **Behavioral Cloning** 
 
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
@@ -19,7 +13,7 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
+[image2]: ./examples/placeholder.png "docs/center_driving.jpg"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
 [image5]: ./examples/placeholder_small.png "Recovery Image"
@@ -54,13 +48,13 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model consists of a convolution neural network with 3x3 and 5x5 filter sizes and depths between 24 and 64 (model.py lines 57-73) 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+Beside ELU the model includes RELU layers to introduce nonlinearity (code line 58 and 60), and the data is normalized in the model using a Keras lambda layer (code line 54). 
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers in order to reduce overfitting (model.py lines 63, 66, 69, 72). 
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
@@ -70,25 +64,32 @@ The model used an adam optimizer, so the learning rate was not tuned manually (m
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road and driving laps in both directions.
+I've put emphasis on recovery maneuvers to try and keep vehicle on track better
 
-For details about how I created the training data, see the next section. 
+For details about how I created the training data, see the next section.
 
 ### Model Architecture and Training Strategy
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
+The overall strategy for deriving a model architecture was to reuse existing network architecture.
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+As suggested in the lecures I first implemented LeNet, and tried loading and preprocessing images, to confirm that this part works.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+Preprocessing of the image includes croping out the part of the image that is not relevant, like sky and hood. Next is converting to YUV color space and bluring the image to smooth it out.
 
-To combat the overfitting, I modified the model so that ...
+In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set where 20% of data was used for validation. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting.
 
-Then I ... 
+To combat the overfitting, I used model implemented by NVIDIA for self driving car. It is explained [here](https://developer.nvidia.com/blog/deep-learning-self-driving-cars/) in more details. I thought this model might be appropriate because it used in real vehicles and could prorably handle simulator well.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+For this I also added resizing of the image to fit default image size for this nerual network. I've also added Lambda layer to normalize the image.
+
+The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track.
+
+To improve the driving behavior in these cases, I created generator that would load and generate data in batches. This also incldued shuffling of input data in order to have random training data sequence so that model would generlize better. For this I also included augmentation of image by randomly flipping it over Y axis.
+
+I loaded all recorded images (center, left and right) but adjusted steering angles of the side images so that angle increases in order to combat recovery maneuvers.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
