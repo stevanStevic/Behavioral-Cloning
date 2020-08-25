@@ -12,13 +12,15 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "docs/center_driving.jpg"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./examples/cnn-architecture-624x890.png "Model Visualization"
+[image2]: ./examples/center_driving.jpg "Center Driving"
+[image3]: ./examples/steeer_to_edge.jpg "Recovery Image 1"
+[image4]: ./examples/close_to_edge.jpg "Recovery Image 2"
+[image5]: ./examples/steer_away2.jpg "Recovery Image 3"
+[image6]: ./examples/normal_image.jpg "Normal Image"
+[image7]: ./examples/flipped_image.jpg "Flipped Image"
+[image8]: ./examples/neural_network.png "Network Summary"
+[image9]: ./examples/training_loss_25-08-2020-20-33-40.png "Network Summary"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -65,7 +67,7 @@ The model used an adam optimizer, so the learning rate was not tuned manually (m
 #### 4. Appropriate training data
 
 Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road and driving laps in both directions.
-I've put emphasis on recovery maneuvers to try and keep vehicle on track better
+I've put emphasis on recovery maneuvers to try and keep vehicle on track better.
 
 For details about how I created the training data, see the next section.
 
@@ -95,11 +97,15 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 53-72) consisted of a convolution neural network with the following layers and layer sizes ...
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+Here is a visualization of the architecture
 
 ![alt text][image1]
+
+And here is the summary of the neural network 
+
+![alt text][image8]
 
 #### 3. Creation of the Training Set & Training Process
 
@@ -107,24 +113,35 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to get back on track and steer on curves. These images show what a recovery looks like where I steer towards the edge of the track, and then hard turn to the center:
 
 ![alt text][image3]
 ![alt text][image4]
 ![alt text][image5]
 
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+To augment the data set, I also flipped images over Y axis and angles thinking that this would help nerual network to generalize better. For example, here is an image that has then been flipped:
 
 ![alt text][image6]
 ![alt text][image7]
 
-Etc ....
+Image above is also preprocessed with croped unrelevant parts and blured with Gaussian filter.
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+After the collection process, I had ~30k samples. This includes center, left and right images. Since I loaded all of them during training I count all of them
+
+I finally randomly shuffled the data set and put 20% of the data into a validation set.
+
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs for me was 15 as evidenced by image below
+
+![alt text][image9]
+
+I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+### Possible improvements
+
+Possible improvements would include additional methods for image augmentation, like resizing, interpolating, using custom parameters, changing brightness and etc.
+Might be good to experiment more with epchos and batch sizes. I tried only few combinations.
+Changing activation functions in neural network could provide some benfits.
+Of course using differnet architecture at all and many other.
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
