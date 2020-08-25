@@ -5,7 +5,7 @@ import tensorflow as tf
 import csv
 import math
 import matplotlib.pyplot as plt
-
+from datetime import datetime
 import image_processing as ip
 
 from keras.models import Sequential
@@ -73,11 +73,13 @@ model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
 
+print(model.summary())
+
 history_object = model.fit_generator(train_generator,                                              \
             steps_per_epoch = math.ceil(len(train_samples) / batch_size),         \
             validation_data = validation_generator,                               \
             validation_steps = math.ceil(len(validation_samples) / batch_size),   \
-            epochs=10,  \
+            epochs=15,  \
             verbose=1)
 
 model.save('model.h5')
@@ -91,4 +93,4 @@ plt.xlabel('Epoch')
 plt.legend(['Training set', 'Validation set'], loc='upper right')
 
 # Save plot
-plt.savefig('docs/training_loss_' + datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+plt.savefig('examples/training_loss_' + datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
